@@ -436,10 +436,6 @@ static void writeHexRecord2Flash(UINT8 * HexRecord) {
     							while(1);
     						}
 						}
-                        else
-                        {
-                            buzzerTone(20);
-                        }
 
 						// Increment the address.
 						HexRecordSt.Address.Val += 4;
