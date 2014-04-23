@@ -27,11 +27,11 @@ Macros used in this file
 *******************************************************************************/
 
 #define CONFIG_IMAGE_FILE_NAME          "image.hex"
-#define CONFIG_TIMER_WAIT_USB           400000
+#define CONFIG_TIMER_WAIT_USB           800000
 #define CONFIG_TIMER_NOTIFY_FAIL        5000
 
-#define DEV_CONFIG_REG_BASE_ADDRESS     0x9FC02FF0
-#define DEV_CONFIG_REG_END_ADDRESS      0x9FC02FFF
+#define DEV_CONFIG_REG_BASE_ADDRESS     0x9FC00BF0
+#define DEV_CONFIG_REG_END_ADDRESS      0x9FC00BFF
 
 #define DATA_RECORD                     0
 #define END_OF_FILE_RECORD              1
@@ -42,7 +42,7 @@ Macros used in this file
 #define REC_NOT_FOUND                   1
 #define REC_FOUND_BUT_NOT_FLASHED       2
 
-#define FLASH_PAGE_SIZE                 0x1000
+#define FLASH_PAGE_SIZE                 0x400
 
 typedef struct {
     UINT8 *start;
@@ -74,13 +74,7 @@ enum mainFsmState {
     FSM_BOOT_APP
 };
 
-/******************************************************************************
-Global Variables
-*******************************************************************************/
-
-/****************************************************************************
-Function prototypes
-*****************************************************************************/
+static uint32_t         FileSize = 0;
 
 static void bootloader(void);
 static void jumpToApp(void);
@@ -88,6 +82,7 @@ static void convertAsciiToHex(UINT8* asciiRec, UINT8* hexRec);
 static void eraseFlash(void);
 static void writeHexRecord2Flash(UINT8 * HexRecord);
 static bool isValidAppPresent(void);
+static uint32_t getFlashNonEmptyAddress(void);
 
 static void bootloader(void) {
     static enum mainFsmState state = FSM_INIT;
@@ -97,6 +92,7 @@ static void bootloader(void) {
     static uint32_t         pointer;
     static uint32_t         retry;
     static uint8_t          asciiBuffer[1024];
+    
     
     switch (state) {
         case FSM_INIT: {
@@ -112,17 +108,11 @@ static void bootloader(void) {
             }
 
             if (USBHostMSDSCSIMediaDetect()) {
-                retry = CONFIG_TIMER_WAIT_USB;
                 state = FSM_INIT_FS;
             }
             break;
         }
         case FSM_INIT_FS: {
-            retry--;
-
-            if (retry == 0u) {
-                state = FSM_BOOT_APP;
-            }
 
             if (FSInit()) {
                 state = FSM_OPEN_FILE;
@@ -143,11 +133,21 @@ static void bootloader(void) {
             break;
         }
         case FSM_NOTIFY_ERASE: {
+            uint32_t    address;
+
             buzzerTone(20);
             appGuiInit();
             appGuiNotifyErase();
             eraseFlash();
-            state = FSM_NOTIFY_LOAD;
+            address = getFlashNonEmptyAddress();
+
+            if (address == 0) {
+                state = FSM_NOTIFY_LOAD;
+            } else {
+                appGuiNotifyFail02(address);
+
+                while(1);
+            }
 
             break;
         }
@@ -160,6 +160,7 @@ static void bootloader(void) {
         case FSM_LOAD_FILE: {
             /*--  For a faster read, read 512 bytes at a time and buffer it.  */
             readBytes = FSfread((void *)&asciiBuffer[pointer], 1, 512, imageFile);
+            FileSize += readBytes;
 
             if (readBytes == 0) {
                 state = FSM_CLOSE_FILE;
@@ -210,14 +211,18 @@ static void bootloader(void) {
             break;
         }
         case FSM_CLOSE_FILE: {
-            FSfclose(imageFile);
-            state = FSM_NOTIFY_DONE;
+            if (FSfclose(imageFile) != 0) {
+                appGuiNotifyFail00();
+                state = FSM_NOTIFY_FAIL;
+            } else {
+                state = FSM_NOTIFY_DONE;
+            }
 
             break;
         }
         case FSM_NOTIFY_DONE: {
             buzzerTone(20);
-            appGuiNotifyDone();
+            appGuiNotifyDone(FileSize);
             DelayMs(5000);
             state = FSM_BOOT_APP;
 
@@ -229,15 +234,13 @@ static void bootloader(void) {
                 jumpToApp();
             } else {
                 buzzerTone(20);
-                appGuiNotifyDone();
+                appGuiNotifyFail00();
                 state = FSM_NOTIFY_FAIL;
             }
             break;
         }
         case FSM_NOTIFY_FAIL: {
-            DelayMs(1000);
-            state = FSM_INIT;
-
+            
             break;
         }
     }
@@ -327,20 +330,18 @@ static void convertAsciiToHex(UINT8 * asciiRec, UINT8 * hexRec) {
 * Note:		 	None.
 ********************************************************************/
 static void eraseFlash(void) {
-	void * pFlash;
     uint32_t result;
     uint32_t i;
 
-    pFlash = (void*)APP_FLASH_BASE_ADDRESS;
-    for( i = 0; i < ((APP_FLASH_END_ADDRESS - APP_FLASH_BASE_ADDRESS + 1)/FLASH_PAGE_SIZE); i++ )
+    for( i = APP_FLASH_BASE_ADDRESS; i < APP_FLASH_END_ADDRESS; i+=FLASH_PAGE_SIZE )
     {
-	    result = NVMemErasePage( pFlash + (i*FLASH_PAGE_SIZE) );
+	    result = NVMemErasePage((void *)i);
         // Assert on NV error. This must be caught during debug phase.
 
         if(result != 0)
         {
            // We have a problem. This must be caught during the debug phase.
-            appGuiNotifyFail02();
+            appGuiNotifyFail02(i);
             
             while(1);
         }
@@ -412,7 +413,7 @@ static void writeHexRecord2Flash(UINT8 * HexRecord) {
 						ProgAddress = (void *)PA_TO_KVA0(HexRecordSt.Address.Val);
 
 						// Make sure we are not writing boot area and device configuration bits.
-						if(((ProgAddress >= (void *)APP_FLASH_BASE_ADDRESS) && (ProgAddress <= (void *)APP_FLASH_END_ADDRESS))
+						if(((ProgAddress >= (void *)APP_FLASH_BASE_ADDRESS) && (ProgAddress < (void *)APP_FLASH_END_ADDRESS))
 						   && ((ProgAddress < (void*)DEV_CONFIG_REG_BASE_ADDRESS) || (ProgAddress > (void*)DEV_CONFIG_REG_END_ADDRESS)))
 						{
 							if(HexRecordSt.RecDataLen < 4)
@@ -435,6 +436,10 @@ static void writeHexRecord2Flash(UINT8 * HexRecord) {
     							while(1);
     						}
 						}
+                        else
+                        {
+                            buzzerTone(20);
+                        }
 
 						// Increment the address.
 						HexRecordSt.Address.Val += 4;
@@ -477,7 +482,7 @@ static void writeHexRecord2Flash(UINT8 * HexRecord) {
 				//IEC1bits.USBIE = 0;
 				USBDisableInterrupts();
                 buzzerTone(20);
-                appGuiNotifyDone();
+                appGuiNotifyDone(FileSize);
                 DelayMs(5000);
                 jumpToApp();
 
@@ -503,6 +508,24 @@ static bool isValidAppPresent(void) {
 
         return (true);
 	}
+}
+
+static uint32_t getFlashNonEmptyAddress(void) {
+    volatile uint32_t * address;
+    uint32_t            retval;
+
+    retval = 0;
+
+    for (address = (uint32_t *)APP_FLASH_BASE_ADDRESS; address < (uint32_t *)APP_FLASH_END_ADDRESS; address++) {
+
+        if (*address != 0xffffffff) {
+            retval = (uint32_t)address;
+
+            break;
+        }
+    }
+
+    return (retval);
 }
 
 /****************************************************************************

@@ -25,7 +25,8 @@
 #define CONFIG_OPTION_TITLE             OPT_CENTER
 #define CONFIG_POS_V_INFO               200
 #define CONFIG_POS_H_INFO               DISP_WIDTH / 2
-#define CONFIG_FONT_SIZE                29
+#define CONFIG_TITLE_FONT_SIZE          30
+#define CONFIG_FONT_SIZE                27
 
 #define CONFIG_TEXT_TITLE               "Bootloader"
 
@@ -88,10 +89,6 @@ static void gpuInitLate(void) {
     Ft_Gpu_Hal_Wr8(&Gpu,  REG_PCLK,     DISP_PCLK);                             /* After this display is visible on the LCD                 */
 }
 
-static void title(void) {
-
-}
-
 void initGuiModule(void) {
     gpuInitEarly();
 }
@@ -109,8 +106,8 @@ void appGuiNotifyErase(void) {
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
     Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
     Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
-    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
-    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,      CONFIG_FONT_SIZE, OPT_CENTER, "Loading new firmware");
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,      CONFIG_FONT_SIZE, OPT_CENTER, "Erasing old firmware");
     Ft_Gpu_CoCmd_Spinner(&Gpu, DISP_WIDTH / 2, DISP_HEIGHT / 2, 0, 0);
     Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
     Ft_Gpu_CoCmd_Swap(&Gpu);
@@ -118,7 +115,6 @@ void appGuiNotifyErase(void) {
 }
 
 void appGuiNotifyLoading(void) {
-#if 0
     Ft_Gpu_CoCmd_Dlstart(&Gpu);
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR_COLOR_RGB(32, 32, 32));
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
@@ -127,16 +123,15 @@ void appGuiNotifyLoading(void) {
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
     Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
     Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
-    Ft_Gpu_CoCmd_Text(&Gpu, DISP_WIDTH / 2, CONFIG_POS_V_TITLE, CONFIG_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
-    Ft_Gpu_CoCmd_Text(&Gpu, DISP_WIDTH / 2, CONFIG_POS_V_INFO,       CONFIG_FONT_SIZE, OPT_CENTER, "Loading new image file");
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,      CONFIG_FONT_SIZE, OPT_CENTER, "Loading new firmware");
     Ft_Gpu_CoCmd_Spinner(&Gpu, DISP_WIDTH / 2, DISP_HEIGHT / 2, 0, 0);
     Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
     Ft_Gpu_CoCmd_Swap(&Gpu);
     Ft_Gpu_Hal_WaitCmdfifo_empty(&Gpu);
-#endif
 }
 
-void appGuiNotifyDone(void) {
+void appGuiNotifyDone(uint32_t fileSize) {
     Ft_Gpu_CoCmd_Dlstart(&Gpu);
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR_COLOR_RGB(4, 92, 4));
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
@@ -145,8 +140,25 @@ void appGuiNotifyDone(void) {
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
     Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
     Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
-    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
     Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,       CONFIG_FONT_SIZE, OPT_CENTER, "Firmware loaded");
+    Ft_Gpu_CoCmd_Number(&Gpu, CONFIG_POS_H_INFO, CONFIG_POS_V_INFO + 20,       CONFIG_FONT_SIZE, OPT_CENTER, fileSize);
+    Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
+    Ft_Gpu_CoCmd_Swap(&Gpu);
+    Ft_Gpu_Hal_WaitCmdfifo_empty(&Gpu);
+}
+
+void appGuiNotifyFail00(void) {
+    Ft_Gpu_CoCmd_Dlstart(&Gpu);
+    Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR_COLOR_RGB(255, 4, 4));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR_COLOR_RGB(8, 8, 128));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, 80));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
+    Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,  CONFIG_FONT_SIZE, OPT_CENTER, "Loading error: 00, no application");
     Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
     Ft_Gpu_CoCmd_Swap(&Gpu);
     Ft_Gpu_Hal_WaitCmdfifo_empty(&Gpu);
@@ -161,14 +173,14 @@ void appGuiNotifyFail01(void) {
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
     Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
     Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
-    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
     Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,  CONFIG_FONT_SIZE, OPT_CENTER, "Loading error: 01, wrong format");
     Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
     Ft_Gpu_CoCmd_Swap(&Gpu);
     Ft_Gpu_Hal_WaitCmdfifo_empty(&Gpu);
 }
 
-void appGuiNotifyFail02(void) {
+void appGuiNotifyFail02(uint32_t address) {
     Ft_Gpu_CoCmd_Dlstart(&Gpu);
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR_COLOR_RGB(255, 4, 4));
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
@@ -177,8 +189,9 @@ void appGuiNotifyFail02(void) {
     Ft_Gpu_Hal_WrCmd32(&Gpu,CLEAR(1,1,1));
     Ft_Gpu_Hal_WrCmd32(&Gpu,SCISSOR_SIZE(DISP_WIDTH, DISP_HEIGHT));
     Ft_Gpu_Hal_WrCmd32(&Gpu,COLOR_RGB(255, 255, 255));
-    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
+    Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_TITLE, CONFIG_POS_V_TITLE, CONFIG_TITLE_FONT_SIZE, OPT_CENTER, CONFIG_TEXT_TITLE);
     Ft_Gpu_CoCmd_Text(&Gpu, CONFIG_POS_H_INFO,  CONFIG_POS_V_INFO,  CONFIG_FONT_SIZE, OPT_CENTER, "Loading error: 02, flash erase");
+    Ft_Gpu_CoCmd_Number(&Gpu, CONFIG_POS_H_INFO, CONFIG_POS_V_INFO + 20, CONFIG_FONT_SIZE, OPT_CENTER, address);
     Ft_Gpu_Hal_WrCmd32(&Gpu, DISPLAY());
     Ft_Gpu_CoCmd_Swap(&Gpu);
     Ft_Gpu_Hal_WaitCmdfifo_empty(&Gpu);

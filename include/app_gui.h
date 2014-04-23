@@ -16,9 +16,10 @@ void initGuiModule(void);
 void appGuiInit(void);
 void appGuiNotifyErase(void);
 void appGuiNotifyLoading(void);
-void appGuiNotifyDone(void);
+void appGuiNotifyDone(uint32_t);
+void appGuiNotifyFail00(void);
 void appGuiNotifyFail01(void);
-void appGuiNotifyFail02(void);
+void appGuiNotifyFail02(uint32_t);
 
 #ifdef	__cplusplus
 }

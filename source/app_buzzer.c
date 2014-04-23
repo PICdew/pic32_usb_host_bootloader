@@ -46,6 +46,7 @@ void buzzerTone(uint32_t duration) {
     while (reload > UINT16_MAX) {
         reload = clockGetPeripheralClock() / (CONFIG_BUZZER_TIME_QUANTUM * (0x1u << prescaler++));
     }
+    T2CONCLR  = T_CON_ON;
     T2CON     = T_CON_TCKPS(prescaler);
     TMR2      = 0u;
     PR2       = reload;
