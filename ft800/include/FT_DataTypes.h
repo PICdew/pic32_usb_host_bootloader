@@ -91,7 +91,7 @@ typedef prog_uint16_t ft_prog_uint16_t;
 
 #ifdef PIC32_PLATFORM
 #define ft_uint8_t                      uint8_t
-#define ft_char8_t                      int8_t
+#define ft_char8_t                      char
 #define ft_schar8_t                     int8_t
 #define ft_uchar8_t                     uint8_t
 #define ft_int16_t                      int16_t
