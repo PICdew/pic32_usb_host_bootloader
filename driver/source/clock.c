@@ -26,7 +26,7 @@
 #define REFOCON_RODIV_Pos               16
 #define REFOCON_RODIV_Msk               (0x7fu << REFOCON_RODIV_Pos)
 
-#define CONFIG_SYSTEM_CLOCK             48000000ul
+#define CONFIG_SYSTEM_CLOCK             80000000ul
 
 /*======================================================  LOCAL DATA TYPES  ==*/
 
