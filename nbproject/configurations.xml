@@ -4,36 +4,13 @@
     <logicalFolder name="driver" displayName="driver" projectFiles="true">
       <logicalFolder name="include" displayName="include" projectFiles="true">
         <logicalFolder name="driver" displayName="driver" projectFiles="true">
-          <itemPath>driver/include/driver/lld_spi2.h</itemPath>
-          <itemPath>driver/include/driver/gpio.h</itemPath>
-          <itemPath>driver/include/driver/spi.h</itemPath>
           <itemPath>driver/include/driver/clock.h</itemPath>
-          <itemPath>driver/include/driver/lld_spi1.h</itemPath>
-          <itemPath>driver/include/driver/lld_spis.h</itemPath>
           <itemPath>driver/include/driver/intr.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="source" displayName="source" projectFiles="true">
         <itemPath>driver/source/clock.c</itemPath>
-        <itemPath>driver/source/gpio.c</itemPath>
-        <itemPath>driver/source/lld_spi1.c</itemPath>
-        <itemPath>driver/source/spi.c</itemPath>
         <itemPath>driver/source/intr.c</itemPath>
-        <itemPath>driver/source/lld_spi2.c</itemPath>
-      </logicalFolder>
-    </logicalFolder>
-    <logicalFolder name="ft800" displayName="ft800" projectFiles="true">
-      <logicalFolder name="include" displayName="include" projectFiles="true">
-        <itemPath>ft800/include/FT_Gpu.h</itemPath>
-        <itemPath>ft800/include/FT_Platform.h</itemPath>
-        <itemPath>ft800/include/FT_DataTypes.h</itemPath>
-        <itemPath>ft800/include/FT_Gpu_Hal.h</itemPath>
-        <itemPath>ft800/include/FT_CoPro_Cmds.h</itemPath>
-        <itemPath>ft800/include/FT_Hal_Utils.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="source" displayName="source" projectFiles="true">
-        <itemPath>ft800/source/FT_CoPro_Cmds.c</itemPath>
-        <itemPath>ft800/source/FT_Gpu_Hal.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="HeaderFiles"
@@ -83,7 +60,7 @@
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
-      <itemPath>linker_scripts/bootloader/others/btl_32MX250F128D_generic.ld</itemPath>
+      <itemPath>/home/nenad/workspace/mplabx/pic32_usb_host_bootloader/linker_scripts/bootloader/others/btl_32MX675F512H_generic.ld</itemPath>
     </logicalFolder>
     <logicalFolder name="ObjectFiles"
                    displayName="Object Files"
@@ -99,9 +76,9 @@
       <itemPath>source/usb_host_msd.c</itemPath>
       <itemPath>source/usb_host_msd_scsi.c</itemPath>
       <itemPath>source/usb_msd_bootloader.c</itemPath>
-      <itemPath>source/app_gui.c</itemPath>
       <itemPath>source/TimeDelay.c</itemPath>
       <itemPath>source/app_buzzer.c</itemPath>
+      <itemPath>/home/nenad/workspace/mplabx/pic32_usb_host_bootloader/source/app_gui.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -117,13 +94,14 @@
     <Elem>linker_scripts/bootloader/others</Elem>
     <Elem>ft800</Elem>
     <Elem>driver</Elem>
+    <Elem>/opt/microchip/mla/USB/Host - Bootloaders/Mass Storage Bootloader/Application Files/Linker Files/PIC32</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <targetDevice>PIC32MX250F128D</targetDevice>
+        <targetDevice>PIC32MX675F512H</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
         <platformTool>ICD3PlatformTool</platformTool>
@@ -136,8 +114,11 @@
           <linkerLibItems>
           </linkerLibItems>
         </linkerTool>
+        <archiverTool>
+        </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
+          <parseOnProdLoad>false</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
       </compileType>
@@ -156,7 +137,7 @@
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
         <property key="enable-unroll-loops" value="false"/>
-        <property key="exclude-floating-point" value="false"/>
+        <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories"
                   value="include;include/MDD File System;include/USB;driver/include;ft800/include"/>
         <property key="generate-16-bit-code" value="true"/>
@@ -175,6 +156,9 @@
         <property key="use-iar" value="false"/>
         <property key="use-indirect-calls" value="false"/>
       </C32>
+      <C32-AR>
+        <property key="additional-options-chop-files" value="false"/>
+      </C32-AR>
       <C32-AS>
         <property key="assembler-symbols" value=""/>
         <property key="enable-symbols" value="true"/>
@@ -252,7 +236,10 @@
         <property key="use-indirect-calls" value="false"/>
       </C32CPP>
       <C32Global>
+        <property key="common-include-directories" value=""/>
+        <property key="gp-relative-option" value=""/>
         <property key="legacy-libc" value="false"/>
+        <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
         <property key="wpo-lto" value="false"/>
       </C32Global>
@@ -261,11 +248,13 @@
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="CHANGE NOTICE" value="true"/>
         <property key="COMPARATOR" value="true"/>
-        <property key="CTMU" value="true"/>
         <property key="DMA" value="true"/>
+        <property key="ETHERNET CONTROLLER" value="true"/>
         <property key="Freeze All Other Peripherals" value="true"/>
         <property key="I2C1" value="true"/>
-        <property key="I2C2" value="true"/>
+        <property key="I2C3" value="true"/>
+        <property key="I2C4" value="true"/>
+        <property key="I2C5" value="true"/>
         <property key="INPUT CAPTURE 1" value="true"/>
         <property key="INPUT CAPTURE 2" value="true"/>
         <property key="INPUT CAPTURE 3" value="true"/>
@@ -279,8 +268,9 @@
         <property key="OUTPUT COMPARE 5" value="true"/>
         <property key="PARALLEL MASTER/SLAVE PORT" value="true"/>
         <property key="REAL TIME CLOCK" value="true"/>
-        <property key="SPI/I2S 1" value="true"/>
-        <property key="SPI/I2S 2" value="true"/>
+        <property key="SPI 2" value="true"/>
+        <property key="SPI 3" value="true"/>
+        <property key="SPI 4" value="true"/>
         <property key="SecureSegment.SegmentProgramming" value="FullChipProgramming"/>
         <property key="TIMER1" value="true"/>
         <property key="TIMER2" value="true"/>
@@ -292,24 +282,32 @@
         <property key="ToolFirmwareOption.UseLatestFirmware" value="true"/>
         <property key="UART1" value="true"/>
         <property key="UART2" value="true"/>
+        <property key="UART3" value="true"/>
+        <property key="UART4" value="true"/>
+        <property key="UART5" value="true"/>
+        <property key="UART6" value="true"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
         <property key="memories.configurationmemory" value="true"/>
+        <property key="memories.dataflash" value="true"/>
         <property key="memories.eeprom" value="true"/>
         <property key="memories.flashdata" value="true"/>
         <property key="memories.id" value="true"/>
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.end" value="0x1d01ffff"/>
         <property key="memories.programmemory.start" value="0x1d000000"/>
+        <property key="memories.userotp" value="false"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preserveeeprom" value="false"/>
         <property key="programoptions.preserveprogramrange" value="false"/>
         <property key="programoptions.preserveprogramrange.end" value="0x1d01ffff"/>
         <property key="programoptions.preserveprogramrange.start" value="0x1d000000"/>
         <property key="programoptions.preserveuserid" value="false"/>
+        <property key="programoptions.programcalmem" value="false"/>
         <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>

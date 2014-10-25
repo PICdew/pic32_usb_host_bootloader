@@ -109,8 +109,6 @@
 
 #if !defined(__32MX795F512L__)
 // Comment this line once you add the right linker script to the workspace.
-    #error("If you are compiling this project for a part number other than PIC32MX795F512L, remove the existing linker script file from \
-the workspace and make sure to add right linker script file for the chosen part from the location ..Firmware\Bootloader\linker_scripts. Later comment this #error.");
 #endif
 
 #endif

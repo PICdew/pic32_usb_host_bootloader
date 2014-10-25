@@ -1,4 +1,5 @@
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <plib.h>
 
@@ -16,7 +17,6 @@
 #include "driver/clock.h"
 #include "driver/intr.h"
 #include "driver/gpio.h"
-#include "driver/spi.h"
 
 #include "app_gui.h"
 #include "app_buzzer.h"
@@ -617,8 +617,6 @@ BOOL USB_ApplicationEventHandler( BYTE address, USB_EVENT event, void *data, DWO
 int main(void) {
     initClockDriver();
     initIntrDriver();
-    initGpioDriver();
-    initSpiDriver();
     initGuiModule();
     initBuzzerModule();
     USBInitialize(0);

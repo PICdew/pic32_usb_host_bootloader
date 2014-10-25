@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=Bootloader
+PROJECTNAME=pic32_usb_host_bootloader
 
 # Active Configuration
 DEFAULTCONF=default
