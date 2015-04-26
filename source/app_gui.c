@@ -6,22 +6,12 @@
 #define CONFIG_TEXT_TITLE               "Bootloader"
 
 
-static void gpuInitEarly(void) {
-    /* Values specific to QVGA LCD display */
-    
-}
-
-static void gpuInitLate(void) {
-    /* Do a power cycle for safer side */
-    
-}
-
 void initGuiModule(void) {
-    gpuInitEarly();
+    gui_init();
 }
 
 void appGuiInit(void) {
-    gpuInitLate();
+    ;
 }
 
 void appGuiNotifyErase(void) {
