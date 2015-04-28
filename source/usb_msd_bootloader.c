@@ -26,12 +26,12 @@
 Macros used in this file
 *******************************************************************************/
 
-#define CONFIG_IMAGE_FILE_NAME          "image.hex"
+#define CONFIG_IMAGE_FILE_NAME          "glucom.hex"
 #define CONFIG_TIMER_WAIT_USB           800000
 #define CONFIG_TIMER_NOTIFY_FAIL        5000
 
-#define DEV_CONFIG_REG_BASE_ADDRESS     0x9FC00BF0
-#define DEV_CONFIG_REG_END_ADDRESS      0x9FC00BFF
+#define DEV_CONFIG_REG_BASE_ADDRESS     0x9FC02FF0
+#define DEV_CONFIG_REG_END_ADDRESS      0x9FC02FFF
 
 #define DATA_RECORD                     0
 #define END_OF_FILE_RECORD              1
@@ -42,7 +42,7 @@ Macros used in this file
 #define REC_NOT_FOUND                   1
 #define REC_FOUND_BUT_NOT_FLASHED       2
 
-#define FLASH_PAGE_SIZE                 0x400
+#define FLASH_PAGE_SIZE                 0x1000
 
 typedef struct {
     UINT8 *start;
@@ -233,6 +233,7 @@ static void bootloader(void) {
             if (isValidAppPresent()) {
                 jumpToApp();
             } else {
+                appGuiInit();
                 buzzerTone(20);
                 appGuiNotifyFail00();
                 state = FSM_NOTIFY_FAIL;

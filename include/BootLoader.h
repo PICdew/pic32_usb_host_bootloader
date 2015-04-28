@@ -24,7 +24,7 @@
 #ifndef __BOOTLOADER_H__
 #define __BOOTLOADER_H__
 
-#define PROGRAM_FLASH_END_ADRESS (0x9D020000)
+#define PROGRAM_FLASH_END_ADRESS (0x9D080000)
 
 
 
@@ -41,7 +41,7 @@
  		 
  		2)The base address and end address must align on  4K address boundary */
  		
-#define APP_FLASH_BASE_ADDRESS 	0x9D008000
+#define APP_FLASH_BASE_ADDRESS 	0x9D00F000
 #define APP_FLASH_END_ADDRESS   PROGRAM_FLASH_END_ADRESS
 
 /* Address of  the Flash from where the application starts executing */
