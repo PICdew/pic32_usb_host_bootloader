@@ -52,13 +52,13 @@
       <itemPath>include/mcu_config.h</itemPath>
       <itemPath>include/app_gui.h</itemPath>
       <itemPath>include/app_buzzer.h</itemPath>
-      <itemPath>drawing.h</itemPath>
-      <itemPath>gui.h</itemPath>
-      <itemPath>ILI9341.h</itemPath>
-      <itemPath>lcd.h</itemPath>
-      <itemPath>colors.h</itemPath>
-      <itemPath>bitmapfonts.h</itemPath>
-      <itemPath>verdanabold14.h</itemPath>
+      <itemPath>include/ILI9341.h</itemPath>
+      <itemPath>include/colors.h</itemPath>
+      <itemPath>include/drawing.h</itemPath>
+      <itemPath>include/gui.h</itemPath>
+      <itemPath>include/lcd.h</itemPath>
+      <itemPath>include/verdanabold14.h</itemPath>
+      <itemPath>include/bitmapfonts.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LibraryFiles"
                    displayName="Library Files"
@@ -86,10 +86,10 @@
       <itemPath>source/TimeDelay.c</itemPath>
       <itemPath>source/app_buzzer.c</itemPath>
       <itemPath>source/app_gui.c</itemPath>
-      <itemPath>gui.c</itemPath>
-      <itemPath>verdanabold14.c</itemPath>
-      <itemPath>drawing.c</itemPath>
-      <itemPath>ILI9341.c</itemPath>
+      <itemPath>source/ILI9341.c</itemPath>
+      <itemPath>source/drawing.c</itemPath>
+      <itemPath>source/gui.c</itemPath>
+      <itemPath>source/verdanabold14.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -150,7 +150,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="true"/>
         <property key="extra-include-directories"
-                  value="include;include/MDD File System;include/USB;driver/include;ft800/include"/>
+                  value="include;include/MDD File System;include/USB;driver/include"/>
         <property key="generate-16-bit-code" value="true"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -205,7 +205,7 @@
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="true"/>
         <property key="generate-micro-compressed-code" value="false"/>
-        <property key="heap-size" value="4000"/>
+        <property key="heap-size" value="0"/>
         <property key="input-libraries" value=""/>
         <property key="linker-symbols" value=""/>
         <property key="map-file" value="&quot;$(BINDIR_)$(TARGETBASE).map&quot;"/>

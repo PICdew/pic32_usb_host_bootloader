@@ -615,6 +615,12 @@ BOOL USB_ApplicationEventHandler( BYTE address, USB_EVENT event, void *data, DWO
 }
 
 int main(void) {
+
+    /* Turn off VOC sensor power supply */
+    TRISD &= ~(0x1u << 10);
+    LATD  |=  (0x1u << 10);
+    TRISD &= ~(0x1u << 5 );
+    LATD  &= ~(0x1u << 10);
     initClockDriver();
     initIntrDriver();
     initGuiModule();

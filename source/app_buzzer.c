@@ -1,22 +1,17 @@
 
 #include <xc.h>
-#include <sys/attribs.h>
 
 #include "app_buzzer.h"
-#include "driver/gpio.h"
-#include "driver/clock.h"
+#include "TimeDelay.h"
 
-#define CONFIG_BUZZER_GPIO_PORT         &GpioB
-#define CONFIG_BUZZER_GPIO_PIN          1
 
 void initBuzzerModule(void) {
-    
+    LATF  &= ~(0x1u << 0);
+    TRISF &= ~(0x1u << 0);
 }
 
 void buzzerTone(uint32_t duration) {
-    
-}
-
-void __ISR(_TIMER_2_VECTOR) buzzerHandler(void) {
-    
+    LATF  |=  (0x1u << 0);
+    DelayMs(duration);
+    LATF  &= ~(0x1u << 0);
 }
