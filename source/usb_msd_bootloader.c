@@ -26,7 +26,7 @@
 Macros used in this file
 *******************************************************************************/
 
-#define CONFIG_IMAGE_FILE_NAME          "glucom.hex"
+#define CONFIG_IMAGE_FILE_NAME          "glucofw.hex"
 #define CONFIG_TIMER_WAIT_USB           800000
 #define CONFIG_TIMER_NOTIFY_FAIL        5000
 
@@ -98,6 +98,8 @@ static void bootloader(void) {
         case FSM_INIT: {
             retry = CONFIG_TIMER_WAIT_USB;
             state = FSM_WAIT_FOR_USB;
+            appGuiInit();
+            appGuiNotifySearching();
             break;
         }
         case FSM_WAIT_FOR_USB: {
@@ -136,7 +138,7 @@ static void bootloader(void) {
             uint32_t    address;
 
             buzzerTone(20);
-            appGuiInit();
+            
             appGuiNotifyErase();
             eraseFlash();
             address = getFlashNonEmptyAddress();
@@ -233,7 +235,6 @@ static void bootloader(void) {
             if (isValidAppPresent()) {
                 jumpToApp();
             } else {
-                appGuiInit();
                 buzzerTone(20);
                 appGuiNotifyFail00();
                 state = FSM_NOTIFY_FAIL;
@@ -621,7 +622,7 @@ int main(void) {
     TRISD &= ~(0x1u << 10);
     LATD  |=  (0x1u << 10);
     TRISD &= ~(0x1u << 5 );
-    LATD  &= ~(0x1u << 10);
+    LATD  &= ~(0x1u << 5 );
     initClockDriver();
     initIntrDriver();
     initGuiModule();

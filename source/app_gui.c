@@ -25,17 +25,24 @@ void appGuiInit(void) {
     gui_init();
 }
 
+void appGuiNotifySearching(void)
+{
+   drawFill(COLOR_BLUE);
+   header();
+   drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Searching FW image...");
+}
+
 void appGuiNotifyErase(void) {
    drawFill(COLOR_BLUE);
    header();
    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Firmware image found.");
-   drawString(20, 170, COLOR_WHITE, &verdanabold14ptFontInfo, "Erasing FLASH memory...");
+   drawString(20, 170, COLOR_WHITE, &verdanabold14ptFontInfo, "Erasing memory...");
 }
 
 void appGuiNotifyLoading(void) {
     drawFill(COLOR_BLUE);
     header();
-    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Loading image from USB...");
+    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Loading image...");
 }
 
 void appGuiNotifyDone(uint32_t fileSize) {
@@ -52,15 +59,15 @@ void appGuiNotifyFail00(void) {
     header();
     drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Failure!");
     drawString(20, 170, COLOR_WHITE, &verdanabold14ptFontInfo, "Error number: 100");
-    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "No firmware.");
+    drawString(20, 190, COLOR_WHITE, &verdanabold14ptFontInfo, "No firmware.");
 }
 
 void appGuiNotifyFail01(void) {
     drawFill(COLOR_RED);
     header();
     drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Failure!");
-    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Error number: 101");
-    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Checksum mismatch.");
+    drawString(20, 170, COLOR_WHITE, &verdanabold14ptFontInfo, "Error number: 101");
+    drawString(20, 190, COLOR_WHITE, &verdanabold14ptFontInfo, "Checksum mismatch.");
 }
 
 void appGuiNotifyFail02(uint32_t address) {
@@ -71,6 +78,6 @@ void appGuiNotifyFail02(uint32_t address) {
     drawFill(COLOR_RED);
     header();
     drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Failure!");
-    drawString(20, 150, COLOR_WHITE, &verdanabold14ptFontInfo, "Error number: 102");
-    drawString(50, 70, COLOR_WHITE, &verdanabold14ptFontInfo, buff);
+    drawString(20, 170, COLOR_WHITE, &verdanabold14ptFontInfo, "Error number: 102");
+    drawString(50, 190, COLOR_WHITE, &verdanabold14ptFontInfo, buff);
 }

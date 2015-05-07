@@ -3,9 +3,9 @@
 
 // Basic Color definitions
 #define	COLOR_BLACK                         (uint16_t)(0x0000)
-#define	COLOR_BLUE                          (uint16_t)(0x001F)
+#define	COLOR_BLUE                          (uint16_t)(0x001d)
 #define	COLOR_RED                           (uint16_t)(0xF800)
-#define	COLOR_GREEN                         (uint16_t)(0x07E0)
+#define	COLOR_GREEN                         (uint16_t)(0x05E0)
 #define COLOR_CYAN                          (uint16_t)(0x07FF)
 #define COLOR_MAGENTA                       (uint16_t)(0xF81F)
 #define COLOR_YELLOW                        (uint16_t)(0xFFE0)

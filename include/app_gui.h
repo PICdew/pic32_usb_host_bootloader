@@ -14,6 +14,7 @@ extern "C" {
 
 void initGuiModule(void);
 void appGuiInit(void);
+void appGuiNotifySearching(void);
 void appGuiNotifyErase(void);
 void appGuiNotifyLoading(void);
 void appGuiNotifyDone(uint32_t);
